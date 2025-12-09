@@ -11,6 +11,8 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { ThemeColorToggle } from "@/components/theme-color-toggle"
+import { ThemeModeToggle } from "@/components/theme-mode-toggle"
 
 function formatTimeRemaining(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -151,10 +153,9 @@ const Page = () => {
 
         <div className="flex items-center gap-3">
           <Button
-            variant="secondary"
+            variant="outline"
             size="sm"
             onClick={() => destroyRoom()}
-            className="text-xs hover:bg-destructive px-3 py-1.5 hover:text-destructive-foreground font-bold transition-all group flex items-center gap-2 disabled:opacity-50"
           >
             <span className="group-hover:animate-pulse">💣</span>
             DESTROY NOW
@@ -162,7 +163,8 @@ const Page = () => {
 
           <Separator orientation="vertical" className="h-5 bg-border" />
 
-          <AnimatedThemeToggler className="" />
+          <ThemeColorToggle />
+          <ThemeModeToggle />
         </div>
       </header>
 
