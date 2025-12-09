@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react"
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
 function formatTimeRemaining(seconds: number) {
