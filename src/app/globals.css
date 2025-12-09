@@ -121,3 +121,8 @@
     font-family: var(--font-jetbrains-mono);
   }
 }
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}

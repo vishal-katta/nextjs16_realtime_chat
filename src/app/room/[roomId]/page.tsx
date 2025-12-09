@@ -7,6 +7,11 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
+import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 function formatTimeRemaining(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -100,53 +105,73 @@ const Page = () => {
     setTimeout(() => setCopyStatus("COPY"), 2000)
   }
 
+  const handleSendMessage = () => {
+    if (!input.trim()) return
+
+    sendMessage({ text: input })
+    inputRef.current?.focus()
+  }
+
   return (
-    <main className="flex flex-col h-screen max-h-screen overflow-hidden">
-      <header className="border-b border-zinc-800 p-4 flex items-center justify-between bg-zinc-900/30">
+    <main className="flex flex-col h-screen max-h-screen overflow-hidden bg-background text-foreground">
+      <header className="border-b p-4 flex items-center justify-between bg-background">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="text-xs text-zinc-500 uppercase">Room ID</span>
+            <span className="text-xs text-muted-foreground/60 uppercase">Room ID</span>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-green-500 truncate">{roomId.slice(0,10) + "..."}</span>
-              <button
+              <span className="font-bold text-primary truncate">
+                {roomId.slice(0, 10) + "..."}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={copyLink}
-                className="text-[10px] bg-zinc-800 hover:bg-zinc-700 px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="h-5 text-[10px] px-2"
               >
                 {copyStatus}
-              </button>
+              </Button>
             </div>
           </div>
 
-          <div className="h-8 w-px bg-zinc-800" />
+          <Separator orientation="vertical" className="h-8!" />
 
           <div className="flex flex-col">
-            <span className="text-xs text-zinc-500 uppercase">Self-Destruct</span>
+            <span className="text-xs text-muted-foreground/60 uppercase">Self-Destruct</span>
             <span
-              className={`text-sm font-bold flex items-center gap-2 ${
+              className={cn(
+                "text-sm font-bold flex items-center gap-2",
                 timeRemaining !== null && timeRemaining < 60
-                  ? "text-red-500"
+                  ? "text-destructive"
                   : "text-amber-500"
-              }`}
+              )}
             >
               {timeRemaining !== null ? formatTimeRemaining(timeRemaining) : "--:--"}
             </span>
           </div>
         </div>
 
-        <button
-          onClick={() => destroyRoom()}
-          className="text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all group flex items-center gap-2 disabled:opacity-50"
-        >
-          <span className="group-hover:animate-pulse">💣</span>
-          DESTROY NOW
-        </button>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => destroyRoom()}
+            className="text-xs text-muted-foreground hover:bg-red-600 hover:text-white font-bold transition-all group flex items-center gap-2"
+          >
+            <span className="group-hover:animate-pulse">💣</span>
+            DESTROY NOW
+          </Button>
+
+          <Separator orientation="vertical" className="h-5 bg-border" />
+
+          <AnimatedThemeToggler className="" />
+        </div>
       </header>
 
       {/* MESSAGES */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
         {messages?.messages.length === 0 && (
           <div className="flex items-center justify-center h-full">
-            <p className="text-zinc-600 text-sm font-mono">
+            <p className="text-muted-foreground/60 text-sm font-mono">
               No messages yet, start the conversation.
             </p>
           </div>
@@ -157,19 +182,20 @@ const Page = () => {
             <div className="max-w-[80%] group">
               <div className="flex items-baseline gap-3 mb-1">
                 <span
-                  className={`text-xs font-bold ${
-                    msg.sender === username ? "text-green-500" : "text-blue-500"
-                  }`}
+                  className={cn(
+                    "text-xs font-bold",
+                    msg.sender === username ? "text-primary" : "text-blue-500"
+                  )}
                 >
                   {msg.sender === username ? "YOU" : msg.sender}
                 </span>
 
-                <span className="text-[10px] text-zinc-600">
+                <span className="text-[10px] text-muted-foreground/60">
                   {format(msg.timestamp, "HH:mm")}
                 </span>
               </div>
 
-              <p className="text-sm text-zinc-300 leading-relaxed break-all">
+              <p className="text-sm text-foreground leading-relaxed break-all">
                 {msg.text}
               </p>
             </div>
@@ -177,10 +203,10 @@ const Page = () => {
         ))}
       </div>
 
-      <div className="p-4 border-t border-zinc-800 bg-zinc-900/30">
+      <div className="p-4 border-t bg-background">
         <div className="flex gap-4">
           <div className="flex-1 relative group">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-green-500 animate-pulse">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary animate-pulse">
               {">"}
             </span>
             <input
@@ -195,17 +221,14 @@ const Page = () => {
               }}
               placeholder="Type message..."
               onChange={(e) => setInput(e.target.value)}
-              className="w-full bg-black border border-zinc-800 focus:border-zinc-700 focus:outline-none transition-colors text-zinc-100 placeholder:text-zinc-700 py-3 pl-8 pr-4 text-sm"
+              className="w-full border border-border focus:outline-none transition-colors text-foreground placeholder:text-muted-foreground/50 py-3 pl-8 pr-4 text-sm"
             />
           </div>
 
           <button
-            onClick={() => {
-              sendMessage({ text: input })
-              inputRef.current?.focus()
-            }}
+            onClick={handleSendMessage}
             disabled={!input.trim() || isPending}
-            className="bg-zinc-800 text-zinc-400 px-6 text-sm font-bold hover:text-zinc-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="bg-primary text-primary-foreground px-6 text-sm font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             SEND
           </button>
