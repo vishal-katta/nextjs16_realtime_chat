@@ -7,6 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Button } from "@/components/ui/button";
+import { ThemeColorToggle } from "@/components/theme-color-toggle";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 
 const Page = () => {
   return (
@@ -38,7 +40,11 @@ function Lobby() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4">
-      <AnimatedThemeToggler className="absolute top-4 right-4" />
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <ThemeColorToggle />
+        <ThemeModeToggle />
+      </div>
+      {/* <AnimatedThemeToggler className="absolute top-4 right-4" /> */}
       <div className="w-full max-w-md space-y-8 ">
         {wasDestroyed && (
           <div className="bg-destructive/15 border border-destructive/50 p-4 text-center">

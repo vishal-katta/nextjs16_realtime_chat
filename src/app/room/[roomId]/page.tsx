@@ -154,7 +154,7 @@ const Page = () => {
             variant="secondary"
             size="sm"
             onClick={() => destroyRoom()}
-            className="text-xs text-muted-foreground hover:bg-red-600 hover:text-white font-bold transition-all group flex items-center gap-2"
+            className="text-xs hover:bg-destructive px-3 py-1.5 hover:text-destructive-foreground font-bold transition-all group flex items-center gap-2 disabled:opacity-50"
           >
             <span className="group-hover:animate-pulse">💣</span>
             DESTROY NOW
