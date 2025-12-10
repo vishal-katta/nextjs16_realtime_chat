@@ -4,11 +4,11 @@ import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Suspense, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeColorToggle } from "@/components/theme-color-toggle";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { usePathname } from "next/navigation";
 
 const Page = () => {
   return (
@@ -23,10 +23,22 @@ export default Page;
 function Lobby() {
   const { username } = useUsername();
   const router = useRouter();
+  const pathname = usePathname();
 
   const searchParams = useSearchParams();
   const wasDestroyed = searchParams.get("destroyed") === "true";
   const error = searchParams.get("error");
+  const searchParamsString = searchParams.toString();
+
+  useEffect(() => {
+    if (!searchParamsString) return;
+
+    const timer = setTimeout(() => {
+      router.replace(pathname);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [pathname, router, searchParamsString]);
 
   const { mutate: createRoom, isPending } = useMutation({
     mutationFn: async () => {
@@ -47,27 +59,30 @@ function Lobby() {
       {/* <AnimatedThemeToggler className="absolute top-4 right-4" /> */}
       <div className="w-full max-w-md space-y-8 ">
         {wasDestroyed && (
-          <div className="bg-destructive/15 border border-destructive/50 p-4 text-center">
+          <div className="relative overflow-hidden bg-destructive/15 border border-destructive/50 p-4 text-center">
             <p className="text-destructive text-sm font-bold">ROOM DESTROYED</p>
             <p className="text-muted-foreground text-xs mt-1">
               All messages were permanently deleted.
             </p>
+            <div className="warning-progress-bar" />
           </div>
         )}
         {error === "room-not-found" && (
-          <div className="bg-destructive/15 border border-destructive/50 p-4 text-center">
+          <div className="relative overflow-hidden bg-destructive/15 border border-destructive/50 p-4 text-center">
             <p className="text-destructive text-sm font-bold">ROOM NOT FOUND</p>
             <p className="text-muted-foreground text-xs mt-1">
               This room may have expired or never existed.
             </p>
+            <div className="warning-progress-bar" />
           </div>
         )}
         {error === "room-full" && (
-          <div className="bg-destructive/15 border border-destructive/50 p-4 text-center">
+          <div className="relative overflow-hidden bg-destructive/15 border border-destructive/50 p-4 text-center">
             <p className="text-destructive text-sm font-bold">ROOM FULL</p>
             <p className="text-muted-foreground text-xs mt-1">
               This room is at maximum capacity.
             </p>
+            <div className="warning-progress-bar" />
           </div>
         )}
 
