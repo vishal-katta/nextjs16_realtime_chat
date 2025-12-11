@@ -43,7 +43,7 @@ function useIsMounted() {
 export default function ThemeDataProvider({ children }: ThemeProviderProps) {
   const isMounted = useIsMounted();
   const storedThemeColor = useThemeColorStore();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const setThemeColor = useCallback((color: ThemeColors) => {
     localStorage.setItem("themeColor", color);
@@ -54,9 +54,9 @@ export default function ThemeDataProvider({ children }: ThemeProviderProps) {
 
   useEffect(() => {
     if (isMounted) {
-      setGlobalColorTheme(theme as "light" | "dark", storedThemeColor);
+      setGlobalColorTheme(resolvedTheme as "light" | "dark", storedThemeColor);
     }
-  }, [storedThemeColor, theme, isMounted]);
+  }, [storedThemeColor, resolvedTheme, isMounted]);
 
   if (!isMounted) {
     return null;

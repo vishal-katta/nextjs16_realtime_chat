@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentPropsWithoutRef } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 import { useTheme } from "next-themes";
@@ -20,12 +20,10 @@ export const AnimatedThemeToggler = ({
   ...props
 }: AnimatedThemeTogglerProps) => {
   const { resolvedTheme, setTheme } = useTheme();
-  const [isDark, setIsDark] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    setIsDark(resolvedTheme === "dark");
-  }, [resolvedTheme]);
+  // Derive isDark directly from resolvedTheme (undefined treated as light for SSR)
+  const isDark = resolvedTheme === "dark";
 
   const toggleTheme = useCallback(async () => {
     if (!buttonRef.current) return;
@@ -38,7 +36,6 @@ export const AnimatedThemeToggler = ({
     const runThemeToggle = () => {
       flushSync(() => {
         setTheme(nextTheme);
-        setIsDark(!isDark);
       });
     };
 
