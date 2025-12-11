@@ -58,7 +58,6 @@ function Lobby() {
         <ThemeColorToggle />
         <AnimatedThemeToggler />
       </div>
-      {/* <AnimatedThemeToggler className="absolute top-4 right-4" /> */}
       <div className="w-full max-w-md space-y-8 ">
         {wasDestroyed && (
           <div className="relative overflow-hidden bg-destructive/15 border border-destructive/50 p-4 text-center">

@@ -115,8 +115,8 @@ const geistMono = Geist_Mono({
 // =======================
 
 export const metadata: Metadata = {
-  title: "Realtime Chat",
-  description: "Realtime Chat with Next.js and Tailwind CSS",
+  title: "Private Chat",
+  description: "A private, self-destructing chat room.",
 };
 
 export default function RootLayout({
