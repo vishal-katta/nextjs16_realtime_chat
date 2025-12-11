@@ -1,14 +1,14 @@
 "use client";
 
+import { AnimatedThemeToggler } from "@/components/custom/animated-theme-toggler";
+import { Credits } from "@/components/custom/credits";
+import { ThemeColorToggle } from "@/components/custom/theme-color-toggle";
+import { Button } from "@/components/ui/button";
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { ThemeColorToggle } from "@/components/theme-color-toggle";
-import { usePathname } from "next/navigation";
-import { AnimatedThemeToggler } from "@/components/animated-theme-toggler";
 
 const Page = () => {
   return (
@@ -53,6 +53,7 @@ function Lobby() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4">
       <div className="absolute top-4 right-4 flex items-center gap-2">
+        <Credits />
         <ThemeColorToggle />
         <AnimatedThemeToggler />
       </div>
