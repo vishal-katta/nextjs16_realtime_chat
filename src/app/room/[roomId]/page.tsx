@@ -7,12 +7,11 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler"
+import { AnimatedThemeToggler } from "@/components/animated-theme-toggler"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeColorToggle } from "@/components/theme-color-toggle"
-import { ThemeModeToggle } from "@/components/theme-mode-toggle"
 
 function formatTimeRemaining(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -164,7 +163,7 @@ const Page = () => {
           <Separator orientation="vertical" className="h-5 bg-border" />
 
           <ThemeColorToggle />
-          <ThemeModeToggle />
+          <AnimatedThemeToggler />
         </div>
       </header>
 
