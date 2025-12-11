@@ -36,19 +36,19 @@ const rooms = new Elysia({ prefix: "/room" })
       }),
     }
   )
-  .use(authMiddleware)
-  .delete(
-    "/leave",
-    async ({ auth }) => {
-      const connected = await redis.hget<string[]>(`meta:${auth.roomId}`, "connected")
+  // .use(authMiddleware)
+  // .delete(
+  //   "/leave",
+  //   async ({ auth }) => {
+  //     const connected = await redis.hget<string[]>(`meta:${auth.roomId}`, "connected")
 
-      if (!connected) return
+  //     if (!connected) return
 
-      const updated = connected.filter((token) => token !== auth.token)
-      await redis.hset(`meta:${auth.roomId}`, { connected: updated })
-    },
-    { query: z.object({ roomId: z.string() }) }
-  )
+  //     const updated = connected.filter((token) => token !== auth.token)
+  //     await redis.hset(`meta:${auth.roomId}`, { connected: updated })
+  //   },
+  //   { query: z.object({ roomId: z.string() }) }
+  // )
   .use(authMiddleware)
   .get(
     "/ttl",
