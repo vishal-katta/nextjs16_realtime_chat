@@ -98,6 +98,30 @@ const Page = () => {
     },
   })
 
+  useEffect(() => {
+    const leaveRoom = () => {
+      // Use keepalive to allow this request during tab close/navigation
+      fetch(`/api/room/leave?roomId=${roomId}`, {
+        method: "DELETE",
+        keepalive: true,
+      }).catch(() => {
+        /* best-effort */
+      })
+    }
+
+    // Handle tab close and page navigation
+    window.addEventListener("beforeunload", leaveRoom)
+    // pagehide fires on navigation away from the page
+    window.addEventListener("pagehide", leaveRoom)
+
+    return () => {
+      window.removeEventListener("beforeunload", leaveRoom)
+      window.removeEventListener("pagehide", leaveRoom)
+      // Don't call leaveRoom() here - it would run on component unmount
+      // which happens during React Strict Mode remounts
+    }
+  }, [roomId])
+
   const copyLink = () => {
     const url = window.location.href
     navigator.clipboard.writeText(url)

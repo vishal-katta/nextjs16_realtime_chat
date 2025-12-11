@@ -8,7 +8,7 @@ import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const Page = () => {
   return (
@@ -24,6 +24,7 @@ function Lobby() {
   const { username } = useUsername();
   const router = useRouter();
   const pathname = usePathname();
+  const [maxConnected, setMaxConnected] = useState(2);
 
   const searchParams = useSearchParams();
   const wasDestroyed = searchParams.get("destroyed") === "true";
@@ -42,7 +43,7 @@ function Lobby() {
 
   const { mutate: createRoom, isPending } = useMutation({
     mutationFn: async () => {
-      const res = await client.room.create.post();
+      const res = await client.room.create.post({ maxConnected });
 
       if (res.status === 200) {
         router.push(`/room/${res.data?.roomId}`);
@@ -108,6 +109,31 @@ function Lobby() {
                   {username || "--"}
                 </div>
               </div>
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center text-muted-foreground">
+                Max Connected Users
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={maxConnected}
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    if (Number.isNaN(value)) {
+                      setMaxConnected(1);
+                      return;
+                    }
+                    setMaxConnected(Math.max(1, Math.min(20, value)));
+                  }}
+                  className="flex-1 rounded-md bg-background border border-border p-3 text-sm text-foreground"
+                />
+              </div>
+              <p className="text-muted-foreground text-xs">
+                Allow between 1 and 20 users to join this room.
+              </p>
             </div>
 
             <Button

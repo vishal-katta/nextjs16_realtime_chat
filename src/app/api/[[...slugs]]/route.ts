@@ -5,21 +5,50 @@ import { authMiddleware } from "./auth"
 import { z } from "zod"
 import { Message, realtime } from "@/lib/realtime"
 
-const ROOM_TTL_SECONDS =60 * 10
+const ROOM_TTL_SECONDS = 60 * 10
+const DEFAULT_MAX_CONNECTED = 2
 
 const rooms = new Elysia({ prefix: "/room" })
-  .post("/create", async () => {
-    const roomId = nanoid()
+  .post(
+    "/create",
+    async ({ body }) => {
+      const roomId = nanoid()
+      const maxConnected = body?.maxConnected ?? DEFAULT_MAX_CONNECTED
 
-    await redis.hset(`meta:${roomId}`, {
-      connected: [],
-      createdAt: Date.now(),
-    })
+      await redis.hset(`meta:${roomId}`, {
+        connected: [],
+        createdAt: Date.now(),
+        maxConnected,
+      })
 
-    await redis.expire(`meta:${roomId}`, ROOM_TTL_SECONDS)
+      await redis.expire(`meta:${roomId}`, ROOM_TTL_SECONDS)
 
-    return { roomId }
-  })
+      return { roomId }
+    },
+    {
+      body: z.object({
+        maxConnected: z
+          .number()
+          .int()
+          .min(1)
+          .max(20)
+          .default(DEFAULT_MAX_CONNECTED),
+      }),
+    }
+  )
+  .use(authMiddleware)
+  .delete(
+    "/leave",
+    async ({ auth }) => {
+      const connected = await redis.hget<string[]>(`meta:${auth.roomId}`, "connected")
+
+      if (!connected) return
+
+      const updated = connected.filter((token) => token !== auth.token)
+      await redis.hset(`meta:${auth.roomId}`, { connected: updated })
+    },
+    { query: z.object({ roomId: z.string() }) }
+  )
   .use(authMiddleware)
   .get(
     "/ttl",
