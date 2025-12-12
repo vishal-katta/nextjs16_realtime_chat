@@ -4,11 +4,12 @@ import { AnimatedThemeToggler } from "@/components/custom/animated-theme-toggler
 import { Credits } from "@/components/custom/credits";
 import { ThemeColorToggle } from "@/components/custom/theme-color-toggle";
 import { Button } from "@/components/ui/button";
+import { Loading } from "@/components/ui/loading";
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useTransition, useRef } from "react";
 
 const Page = () => {
   return (
@@ -25,6 +26,8 @@ function Lobby() {
   const router = useRouter();
   const pathname = usePathname();
   const [maxConnected, setMaxConnected] = useState(2);
+  const [isNavigating, startTransition] = useTransition();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchParams = useSearchParams();
   const wasDestroyed = searchParams.get("destroyed") === "true";
@@ -34,25 +37,58 @@ function Lobby() {
   useEffect(() => {
     if (!searchParamsString) return;
 
-    const timer = setTimeout(() => {
-      router.replace(pathname);
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      // Only replace if we're still on the home page
+      if (pathname === "/") {
+        router.replace(pathname);
+      }
     }, 5000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [pathname, router, searchParamsString]);
+
+  // Clear timer when navigation starts
+  useEffect(() => {
+    if (isNavigating && timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, [isNavigating]);
 
   const { mutate: createRoom, isPending } = useMutation({
     mutationFn: async () => {
       const res = await client.room.create.post({ maxConnected });
 
       if (res.status === 200) {
-        router.push(`/room/${res.data?.roomId}`);
+        // Clear timer before navigating
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+          timerRef.current = null;
+        }
+        
+        startTransition(() => {
+          router.push(`/room/${res.data?.roomId}`);
+        });
       }
     },
   });
 
+  const isLoading = isPending || isNavigating;
+
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4">
+      {isNavigating && (
+        <Loading overlay message="Navigating to room..." />
+      )}
       <div className="absolute top-4 right-4 flex items-center gap-2">
         <Credits />
         <ThemeColorToggle />
@@ -139,9 +175,9 @@ function Lobby() {
               onClick={() => createRoom()}
               className="w-full"
               size="lg"
-              disabled={!username || isPending}
+              disabled={!username || isLoading}
             >
-              {isPending ? "CREATING..." : "CREATE SECURE ROOM"}
+              {isLoading ? "CREATING..." : "CREATE SECURE ROOM"}
             </Button>
           </div>
         </div>

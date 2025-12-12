@@ -4,6 +4,7 @@ import { AnimatedThemeToggler } from "@/components/custom/animated-theme-toggler
 import { ThemeColorToggle } from "@/components/custom/theme-color-toggle"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Loading } from "@/components/ui/loading"
 import { useUsername } from "@/hooks/use-username"
 import { client } from "@/lib/client"
 import { useRealtime } from "@/lib/realtime-client"
@@ -11,7 +12,7 @@ import { cn } from "@/lib/utils"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 
 function formatTimeRemaining(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -24,6 +25,7 @@ const Page = () => {
   const roomId = params.roomId as string
 
   const router = useRouter()
+  const [isNavigating, startTransition] = useTransition()
 
   const { username } = useUsername()
   const [input, setInput] = useState("")
@@ -45,7 +47,9 @@ const Page = () => {
     if (timeRemaining === null || timeRemaining < 0) return
 
     if (timeRemaining === 0) {
-      router.push("/?destroyed=true")
+      startTransition(() => {
+        router.push("/?destroyed=true")
+      })
       return
     }
 
@@ -87,7 +91,9 @@ const Page = () => {
       }
 
       if (event === "chat.destroy") {
-        router.push("/?destroyed=true")
+        startTransition(() => {
+          router.push("/?destroyed=true")
+        })
       }
     },
   })
@@ -138,6 +144,9 @@ const Page = () => {
 
   return (
     <main className="flex flex-col h-screen max-h-screen overflow-hidden bg-background text-foreground">
+      {isNavigating && (
+        <Loading overlay message="Returning to home..." />
+      )}
       <header className="border-b p-4 flex items-center justify-between bg-background">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
