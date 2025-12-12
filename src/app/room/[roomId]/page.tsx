@@ -98,7 +98,7 @@ const Page = () => {
     },
   })
 
-  const { mutate: destroyRoom } = useMutation({
+  const { mutate: destroyRoom, isPending: isDestroying } = useMutation({
     mutationFn: async () => {
       await client.room.delete(null, { query: { roomId } })
     },
@@ -188,9 +188,10 @@ const Page = () => {
             variant="outline"
             size="sm"
             onClick={() => destroyRoom()}
+            disabled={isDestroying || isNavigating}
           >
             <span className="group-hover:animate-pulse">💣</span>
-            DESTROY NOW
+            {isDestroying ? "DESTROYING..." : "DESTROY NOW"}
           </Button>
 
           <Separator orientation="vertical" className="h-5 bg-border" />
