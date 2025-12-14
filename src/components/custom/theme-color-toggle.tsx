@@ -1,18 +1,17 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import { useThemeContext } from "@/context/theme-data-provider";
+import setGlobalColorTheme, { THEMES } from "@/lib/theme-colors";
 import { useTheme } from "next-themes";
-import { THEMES } from "@/lib/theme-colors";
-import setGlobalColorTheme from "@/lib/theme-colors";
 
 const availableThemeColors = Object.entries(THEMES).map(([key, value]) => ({
   name: key,
@@ -114,7 +113,7 @@ export function ThemeColorToggle() {
           <SelectValue placeholder="Select Color" />
         )}
       </SelectTrigger>
-      <SelectContent className="border-muted">
+      <SelectContent position="popper" align="end" sideOffset={4} className="border-muted">
         {selectItems}
       </SelectContent>
     </Select>

@@ -133,7 +133,7 @@ function Lobby() {
               </label>
 
               <div className="flex items-center gap-3">
-                <div className="flex-1 rounded-md bg-background border border-border p-3 text-sm text-muted-foreground font-mono">
+                <div className="flex-1 rounded-md bg-background border border-border px-3 py-2 text-sm text-muted-foreground font-mono">
                   {username || "--"}
                 </div>
               </div>
@@ -156,7 +156,7 @@ function Lobby() {
                     }
                     setMaxConnected(Math.max(1, Math.min(20, value)));
                   }}
-                  className="flex-1 rounded-md bg-background border border-border p-3 text-sm text-foreground"
+                  className="flex-1 rounded-md bg-background border border-border px-3 py-2 text-sm text-foreground"
                 />
               </div>
               <p className="text-muted-foreground text-xs">

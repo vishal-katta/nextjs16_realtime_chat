@@ -166,7 +166,7 @@ const Page = () => {
             </div>
           </div>
 
-          <Separator orientation="vertical" className="h-8!" />
+          <Separator orientation="vertical" className="h-10!" />
 
           <div className="flex flex-col">
             <span className="text-xs text-muted-foreground/60 uppercase">Self-Destruct</span>
@@ -183,7 +183,7 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4 h-7">
           <Button
             variant="outline"
             size="sm"
@@ -194,7 +194,7 @@ const Page = () => {
             {isDestroying ? "DESTROYING..." : "DESTROY NOW"}
           </Button>
 
-          <Separator orientation="vertical" className="h-5 bg-border" />
+          <Separator orientation="vertical" className="bg-border" />
 
           <ThemeColorToggle />
           <AnimatedThemeToggler />
