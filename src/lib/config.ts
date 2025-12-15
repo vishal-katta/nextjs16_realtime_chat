@@ -4,7 +4,7 @@ export const siteConfig = {
   ogImage: "https://pc.sitestash.org/og.jpg",
   description: "A private, self-destructing chat room.",
   links: {
-    github: "https://github.com/vishal-katta/nextjs16_realtime_chat",
+    github: "https://github.com/vishkx/nextjs16_realtime_chat",
   },
   navItems: [
     {

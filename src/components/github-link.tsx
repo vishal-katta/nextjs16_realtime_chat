@@ -21,7 +21,7 @@ export function GitHubLink() {
 
 export async function StarsCount() {
   const data = await fetch(
-    "https://api.github.com/repos/vishal-katta/nextjs16_realtime_chat",
+    "https://api.github.com/repos/vishkx/nextjs16_realtime_chat",
     {
       next: { revalidate: 60 * 60 }, // 1 hour
     },

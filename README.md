@@ -48,7 +48,7 @@ A modern, real-time chat application built with Next.js 16 that creates private,
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/vishal-katta/nextjs16_realtime_chat.git
+git clone https://github.com/vishkx/nextjs16_realtime_chat.git
 cd nextjs16_realtime_chat
 ```
 
@@ -229,7 +229,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 📧 Contact
 
-For questions or suggestions, please open an issue on [GitHub](https://github.com/vishal-katta/nextjs16_realtime_chat/issues).
+For questions or suggestions, please open an issue on [GitHub](https://github.com/vishkx/nextjs16_realtime_chat/issues).
 
 ---
 
